@@ -1,0 +1,4 @@
+SQL CONSTRAINTS
+
+All primary keys need to be unique and not null and foreign keys must be on the main table.
+Also SQL have the option to add constraint, which allows you to have more control of certain data, using CHECK and CHECK IN for data validation
