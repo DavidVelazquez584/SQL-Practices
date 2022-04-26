@@ -1,0 +1,69 @@
+**Cleaning Data**
+-----
+
+Fisrt it is need to import from a csv file all data
+
+----
+
+Then finding duplicates with GROUP BY and HAVING as shown in the following query: 
+SELECT company,
+       street,
+       city,
+       st,
+       count(*) AS address_count
+FROM meat_poultry_egg_establishments
+GROUP BY company, street, city, st
+HAVING count(*) > 1
+ORDER BY company, street, city, st;
+
+----
+
+Then finding missing data, which are the ones who have null values using WHERE by doing the following query:
+SELECT establishment_number,
+       company,
+       city,
+       st,
+       zip
+FROM meat_poultry_egg_establishments
+WHERE st IS NULL;
+
+----
+
+Then there is added a constraint in some columns by the following query: 
+SELECT st,
+       count(*) AS st_count
+FROM meat_poultry_egg_establishments
+WHERE length(zip) < 5
+GROUP BY st
+ORDER BY st ASC;
+
+----
+
+Then, for fixing the data, a backup table is required by doing the following query: 
+Create table backup as select Select * from originalTable;
+
+Then is recommended to create a new column and work in that column with the fix of the missing st values
+
+---- 
+
+Then for delete duplicates, it is need to make a function to find out those duplicates and keep the important 
+ones by doing the following query: 
+delete from meat_poultry_egg_establishments
+where establishment_number not in (
+    Select max(establishment_number)
+    from meat_poultry_egg_establishments
+    group by company, street, city, st
+);
+
+---- 
+Finally there is required to do the transactions, by doing database operations, rollback and commit, which
+are important when we need to update the table, like the following query: 
+START TRANSACTION 
+update meat_poultry_egg_establishments
+SET company = 'Gdl'
+
+SELECT company,* FROM meat_poultry_egg_establishments
+
+ROLLBACK;
+COMMIT;
+
